@@ -79,7 +79,7 @@ public class TroubleTicketService {
 	public List<TroubleTicket> findTroubleTicket() {
 		return troubleTicketRepository.findAll();
 	}
-	// TODO combine these 2 ?
+	// TODO combine these 2 ?   
 
 	public List<TroubleTicket> findTroubleTicket(TroubleTicket criteria) {
 
