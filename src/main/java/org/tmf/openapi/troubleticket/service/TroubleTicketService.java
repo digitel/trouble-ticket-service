@@ -1,6 +1,7 @@
 package org.tmf.openapi.troubleticket.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.tmf.openapi.troubleticket.domain.Status;
 import org.tmf.openapi.troubleticket.domain.TroubleTicket;
 import org.tmf.openapi.troubleticket.repository.TroubleTicketRepository;
+import org.tmf.openapi.troubleticket.repository.TroubleTicketSpecifications;
 
 @Service
 public class TroubleTicketService {
@@ -72,6 +74,22 @@ public class TroubleTicketService {
 	public TroubleTicket fullUpdateTroubleTicket(@Valid TroubleTicket troubleTicket) {
 
 		return troubleTicketRepository.save(troubleTicket);
+	}
+
+	public List<TroubleTicket> findTroubleTicket() {
+		return troubleTicketRepository.findAll();
+	}
+	// TODO combine these 2 ?
+
+	public List<TroubleTicket> findTroubleTicket(TroubleTicket criteria) {
+
+		if (null != criteria.getStatus()) {
+			List<TroubleTicket> result = troubleTicketRepository
+					.findAll(TroubleTicketSpecifications.status(criteria.getStatus()));
+			return result;
+		}
+
+		return troubleTicketRepository.findAll();
 	}
 
 }

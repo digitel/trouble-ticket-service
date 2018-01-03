@@ -10,6 +10,8 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -52,7 +54,9 @@ public class TroubleTicket implements Serializable {
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssz")
 	private Date targetResolutionDate;
 
+	@Enumerated(EnumType.STRING)
 	private Status status;
+
 	private SubStatus subStatus;
 	private String statusChangeReason;
 
@@ -73,7 +77,6 @@ public class TroubleTicket implements Serializable {
 	@ElementCollection
 	@CollectionTable(name = "RELATED_PARTY", joinColumns = @JoinColumn(name = "OWNER_ID"))
 	private List<RelatedParty> relatedParties;
-
 
 	public Long getId() {
 		return id;
