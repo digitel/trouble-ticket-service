@@ -37,7 +37,8 @@ public class TroubleTicketController {
 	}
 
 	@PatchMapping("/{id}")
-	public ResponseEntity<Object> patchTroubleTicket(@PathVariable Long id, @RequestBody TroubleTicket troubleTicket) {
+	public ResponseEntity<TroubleTicket> patchTroubleTicket(@PathVariable Long id,
+			@RequestBody TroubleTicket troubleTicket) {
 
 		if (null != troubleTicket.getId()) {
 			throw new IllegalArgumentException("id cannot be updated.");
@@ -51,10 +52,10 @@ public class TroubleTicketController {
 	@PutMapping("/{id}")
 	public ResponseEntity<Object> updateTroubleTicket(@PathVariable Long id, @RequestBody TroubleTicket troubleTicket) {
 
-		if (null != troubleTicket.getId() && id != troubleTicket.getId()) {
+		if ((null == troubleTicket.getId()) || (null != troubleTicket.getId() && id != troubleTicket.getId())) {
 			throw new IllegalArgumentException("id cannot be updated.");
 		}
-		troubleTicket = troubleTicketService.fullUpdateTroubleTicket(troubleTicket);
+		troubleTicket = troubleTicketService.updateTroubleTicket(troubleTicket);
 		return ResponseEntity.ok(troubleTicket);
 
 	}

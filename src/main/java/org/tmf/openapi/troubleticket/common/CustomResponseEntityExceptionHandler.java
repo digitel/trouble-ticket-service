@@ -29,7 +29,8 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 	 */
 	@ExceptionHandler({ RollbackException.class, ConstraintViolationException.class, IllegalArgumentException.class })
 	@Nullable
-	public final ResponseEntity<Object> handleConstraintViolationException(Exception ex, WebRequest request) {
+	public final ResponseEntity<CustomExceptionResponse> handleConstraintViolationException(Exception ex,
+			WebRequest request) {
 
 		CustomExceptionResponse exceptionResponse = new CustomExceptionResponse();
 

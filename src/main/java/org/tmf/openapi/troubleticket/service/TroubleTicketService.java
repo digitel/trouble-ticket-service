@@ -43,7 +43,7 @@ public class TroubleTicketService {
 
 		if (troubleTicket.getCorrelationId() != null || troubleTicket.getCreationDate() != null) {
 
-			throw new IllegalArgumentException("id, correlationId and creationDate cannot be updated.");
+			throw new IllegalArgumentException("correlationId and creationDate cannot be updated.");
 		}
 
 		Optional<TroubleTicket> existingTroubleTicketOption = troubleTicketRepository.findById(troubleTicket.getId());
@@ -52,26 +52,72 @@ public class TroubleTicketService {
 		}
 
 		TroubleTicket existingTroubleTicket = existingTroubleTicketOption.get();
-		existingTroubleTicket.setDescription(troubleTicket.getDescription());
-		existingTroubleTicket.setSeverity(troubleTicket.getSeverity());
-		existingTroubleTicket.setType(troubleTicket.getType());
-		existingTroubleTicket.setTargetResolutionDate(troubleTicket.getTargetResolutionDate());
-		existingTroubleTicket.setStatus(troubleTicket.getStatus());
-		existingTroubleTicket.setSubStatus(troubleTicket.getSubStatus());
-		existingTroubleTicket.setStatusChangeReason(troubleTicket.getStatusChangeReason());
-		existingTroubleTicket.setStatusChangeDate(troubleTicket.getStatusChangeDate());
-		existingTroubleTicket.setResolutionDate(troubleTicket.getResolutionDate());
 
-		// TODO change element collection to one to many and implement correct patching
-		// on
-		existingTroubleTicket.setRelatedParties(troubleTicket.getRelatedParties());
-		existingTroubleTicket.setRelatedObjects(troubleTicket.getRelatedObjects());
-		existingTroubleTicket.setNotes(troubleTicket.getNotes());
+		if (null != troubleTicket.getDescription()) {
+			existingTroubleTicket.setDescription(troubleTicket.getDescription());
+		}
 
-		return troubleTicketRepository.save(troubleTicket);
+		if (null != troubleTicket.getSeverity()) {
+			existingTroubleTicket.setSeverity(troubleTicket.getSeverity());
+		}
+
+		if (null != troubleTicket.getType()) {
+			existingTroubleTicket.setType(troubleTicket.getType());
+		}
+
+		if (null != troubleTicket.getTargetResolutionDate()) {
+			existingTroubleTicket.setTargetResolutionDate(troubleTicket.getTargetResolutionDate());
+		}
+
+		if (null != troubleTicket.getStatus()) {
+			if (existingTroubleTicket.getStatus() == Status.RESOLVED && troubleTicket.getStatus() != Status.CLOSED) {
+
+				throw new IllegalArgumentException(
+						"Trouble Ticket with Status " + Status.RESOLVED + " can only be " + Status.CLOSED);
+			}
+
+			if ((existingTroubleTicket.getStatus() == Status.SUBMITTED
+					|| existingTroubleTicket.getStatus() == Status.ACKNOWLEDGED
+					|| existingTroubleTicket.getStatus() == Status.IN_PROGRESS)
+					&& troubleTicket.getStatus() != Status.CANCELLED) {
+
+				throw new IllegalArgumentException("Trouble Ticket with Status " + Status.SUBMITTED + ","
+						+ Status.ACKNOWLEDGED + "," + Status.IN_PROGRESS + " can only be " + Status.CANCELLED);
+			}
+			existingTroubleTicket.setStatus(troubleTicket.getStatus());
+		}
+
+		if (null != troubleTicket.getSubStatus()) {
+			existingTroubleTicket.setSubStatus(troubleTicket.getSubStatus());
+		}
+
+		if (null != troubleTicket.getStatusChangeReason()) {
+			existingTroubleTicket.setStatusChangeReason(troubleTicket.getStatusChangeReason());
+		}
+
+		if (null != troubleTicket.getStatusChangeDate()) {
+			existingTroubleTicket.setStatusChangeDate(troubleTicket.getStatusChangeDate());
+		}
+
+		if (null != troubleTicket.getResolutionDate()) {
+			existingTroubleTicket.setResolutionDate(troubleTicket.getResolutionDate());
+		}
+
+		if (null != troubleTicket.getRelatedParties()) {
+			existingTroubleTicket.setRelatedParties(troubleTicket.getRelatedParties());
+		}
+
+		if (null != troubleTicket.getRelatedObjects()) {
+			existingTroubleTicket.setRelatedObjects(troubleTicket.getRelatedObjects());
+		}
+		if (null != troubleTicket.getNotes()) {
+			existingTroubleTicket.setNotes(troubleTicket.getNotes());
+		}
+
+		return troubleTicketRepository.save(existingTroubleTicket);
 	}
 
-	public TroubleTicket fullUpdateTroubleTicket(@Valid TroubleTicket troubleTicket) {
+	public TroubleTicket updateTroubleTicket(@Valid TroubleTicket troubleTicket) {
 
 		return troubleTicketRepository.save(troubleTicket);
 	}
@@ -79,7 +125,7 @@ public class TroubleTicketService {
 	public List<TroubleTicket> findTroubleTicket() {
 		return troubleTicketRepository.findAll();
 	}
-	// TODO combine these 2 ?   
+	// TODO combine these 2 ?
 
 	public List<TroubleTicket> findTroubleTicket(TroubleTicket criteria) {
 
