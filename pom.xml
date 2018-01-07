@@ -91,7 +91,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>com.spotify</groupId>
 				<artifactId>dockerfile-maven-plugin</artifactId>
@@ -107,13 +107,15 @@
 				</executions>
 				<configuration>
 					<repository>opentel/trouble-ticket-service</repository>
+					<serverId>docker-hub</serverId>
+					<registryUrl>https://hub.docker.com/</registryUrl>
 					<tag>${project.version}</tag>
 					<buildArgs>
 						<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
 					</buildArgs>
 				</configuration>
 			</plugin>
-		
+
 		</plugins>
 	</build>
 
