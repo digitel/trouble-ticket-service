@@ -108,7 +108,7 @@
 				<configuration>
 					<repository>opentel/trouble-ticket-service</repository>
 					<serverId>docker-hub</serverId>
-					<registryUrl>https://hub.docker.com/</registryUrl>
+					<registryUrl>https://index.docker.io/v1/</registryUrl>
 					<tag>${project.version}</tag>
 					<buildArgs>
 						<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
