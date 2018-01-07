@@ -106,7 +106,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<repository>https://index.docker.io/v2/opentel/trouble-ticket-service</repository>
+					<repository>https://registry.hub.docker.com/v1/opentel/trouble-ticket-service</repository>
 					<serverId>docker-hub</serverId>
 					<tag>${project.version}</tag>
 					<useMavenSettingsForAuth>true</useMavenSettingsForAuth>
