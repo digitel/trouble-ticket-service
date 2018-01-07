@@ -106,10 +106,10 @@
 					</execution>
 				</executions>
 				<configuration>
-					<repository>opentel/trouble-ticket-service</repository>
+					<repository>https://index.docker.io/v2/opentel/trouble-ticket-service</repository>
 					<serverId>docker-hub</serverId>
-					<registryUrl>https://index.docker.io/v2/</registryUrl>
 					<tag>${project.version}</tag>
+					<useMavenSettingsForAuth>true</useMavenSettingsForAuth>
 					<buildArgs>
 						<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
 					</buildArgs>
