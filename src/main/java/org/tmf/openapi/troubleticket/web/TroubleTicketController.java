@@ -60,6 +60,16 @@ public class TroubleTicketController {
 
 	}
 
+	@GetMapping("/{id}")
+	public ResponseEntity<TroubleTicket> getTroubleTicket(@PathVariable Long id,
+			@RequestParam Map<String, String> allRequestParams) {
+
+		TroubleTicket criteria = new TroubleTicket();
+		criteria.setId(id);
+		return ResponseEntity.ok(troubleTicketService.findTroubleTicket(criteria).get(0));
+
+	}
+
 	@GetMapping()
 	public ResponseEntity<Object> getTroubleTicket(@RequestParam Map<String, String> allRequestParams) {
 

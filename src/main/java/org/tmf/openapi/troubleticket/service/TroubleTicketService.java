@@ -1,7 +1,9 @@
 package org.tmf.openapi.troubleticket.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -128,6 +130,19 @@ public class TroubleTicketService {
 	// TODO combine these 2 ?
 
 	public List<TroubleTicket> findTroubleTicket(TroubleTicket criteria) {
+
+		List<TroubleTicket> tickets = new ArrayList<>();
+
+		if (null != criteria.getId()) {
+
+			Optional<TroubleTicket> ticket = troubleTicketRepository.findById(criteria.getId());
+			if (ticket.isPresent()) {
+
+				tickets.add(ticket.get());
+				return tickets;
+			}
+			throw new NoSuchElementException("Trouble Ticket with id " + criteria.getId() + " doesnot exists");
+		}
 
 		if (null != criteria.getStatus()) {
 			List<TroubleTicket> result = troubleTicketRepository

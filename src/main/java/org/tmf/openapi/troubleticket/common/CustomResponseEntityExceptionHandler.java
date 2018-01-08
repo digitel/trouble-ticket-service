@@ -1,6 +1,7 @@
 package org.tmf.openapi.troubleticket.common;
 
 import java.util.Date;
+import java.util.NoSuchElementException;
 
 import javax.persistence.RollbackException;
 import javax.validation.ConstraintViolationException;
@@ -45,6 +46,23 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 		exceptionResponse.setMessage(cause.getMessage());
 		exceptionResponse.setPath(request.getDescription(false));
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+
+	}
+
+	/**
+	 * Provides handling for Bad Requests exceptions.
+	 * 
+	 * @param ex
+	 *            the target exception
+	 * @param request
+	 *            the current request
+	 */
+	@ExceptionHandler({ NoSuchElementException.class })
+	@Nullable
+	public final ResponseEntity<CustomExceptionResponse> handleNoSuchElementException(Exception ex,
+			WebRequest request) {
+
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
 	}
 }
