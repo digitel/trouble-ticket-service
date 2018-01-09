@@ -22,10 +22,12 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @XmlRootElement
+@JsonFilter("troubleTicketFilter")
 public class TroubleTicket implements Serializable {
 
 	private static final long serialVersionUID = -8788148471610700410L;

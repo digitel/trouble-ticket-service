@@ -124,7 +124,7 @@ public class TroubleTicketService {
 		return troubleTicketRepository.save(troubleTicket);
 	}
 
-	public List<TroubleTicket> findTroubleTicket() {
+	public List<TroubleTicket> findAllTroubleTicket() {
 		return troubleTicketRepository.findAll();
 	}
 	// TODO combine these 2 ?
