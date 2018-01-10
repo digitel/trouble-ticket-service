@@ -75,7 +75,7 @@ public class TroubleTicketController {
 		TroubleTicket criteria = new TroubleTicket();
 		criteria.setId(id);
 		TroubleTicket ticket = troubleTicketService.findTroubleTicket(criteria).get(0);
-		return ResponseEntity.ok(mapObjectWithExcludeFilter(ticket, null));
+		return ResponseEntity.ok(mapObjectWithExcludeFilter(ticket, allRequestParams));
 
 	}
 
@@ -89,14 +89,7 @@ public class TroubleTicketController {
 
 		TroubleTicket searchCriteria = getSearchCriteria(allRequestParams);
 		List<TroubleTicket> troubleTickets = troubleTicketService.findTroubleTicket(searchCriteria);
-
-		Set<String> fields = null;
-		if (allRequestParams.containsKey("fields")) {
-			fields = new HashSet<>(Arrays.asList(allRequestParams.get("fields").split(",")));
-			fields.add("id");
-		}
-
-		return ResponseEntity.ok(mapObjectWithExcludeFilter(troubleTickets, fields));
+		return ResponseEntity.ok(mapObjectWithExcludeFilter(troubleTickets, allRequestParams));
 	}
 
 	private TroubleTicket getSearchCriteria(Map<String, String> allRequestParams) {
@@ -118,10 +111,33 @@ public class TroubleTicketController {
 		return spec;
 	}
 
-	private MappingJacksonValue mapObjectWithExcludeFilter(Object object, Set<String> fields) {
+	private MappingJacksonValue mapObjectWithExcludeFilter(Object object, Map<String, String> allRequestParams) {
+
+		Set<String> fields = new HashSet<>();
+
+		if (null != allRequestParams && allRequestParams.size() > 0) {
+
+			// Handling for URI Like -> /api/resource/1?fields=field1,field2
+			if (allRequestParams.containsKey("fields")) {
+				fields.addAll(Arrays.asList(allRequestParams.get("fields").split(",")));
+				fields.add("id");
+			}
+
+			// Handling for URI Like ->  /api/resource/1?field1,field2
+			for (Map.Entry<String, String> entry : allRequestParams.entrySet()) {
+				System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
+				if ((null == entry.getValue() || entry.getValue().isEmpty()) && (null != entry.getKey())) {
+					fields.addAll(Arrays.asList(entry.getKey().split(",")));
+					fields.add("id");
+					break;
+				}
+			}
+
+		}
+
 		MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(object);
 		SimpleFilterProvider filters = new SimpleFilterProvider().setFailOnUnknownId(false);
-		if (null != fields) {
+		if (null != fields && fields.size() > 0) {
 			filters.addFilter("troubleTicketFilter", SimpleBeanPropertyFilter.filterOutAllExcept(fields));
 
 		}
@@ -130,4 +146,3 @@ public class TroubleTicketController {
 	}
 
 }
-
