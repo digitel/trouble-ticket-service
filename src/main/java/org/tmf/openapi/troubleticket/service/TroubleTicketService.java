@@ -1,19 +1,18 @@
 package org.tmf.openapi.troubleticket.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.tmf.openapi.troubleticket.domain.Status;
 import org.tmf.openapi.troubleticket.domain.TroubleTicket;
 import org.tmf.openapi.troubleticket.repository.TroubleTicketRepository;
-import org.tmf.openapi.troubleticket.repository.TroubleTicketSpecifications;
 
 @Service
 public class TroubleTicketService {
@@ -124,33 +123,13 @@ public class TroubleTicketService {
 		return troubleTicketRepository.save(troubleTicket);
 	}
 
-	public List<TroubleTicket> findAllTroubleTicket() {
-		return troubleTicketRepository.findAll();
+	public TroubleTicket findTroubleTicket(@NotNull Long id) {
+		return troubleTicketRepository.findById(id).get();
 	}
-	// TODO combine these 2 ?
 
-	public List<TroubleTicket> findTroubleTicket(TroubleTicket criteria) {
+	public List<TroubleTicket> findTroubleTicket(Specification<TroubleTicket> specification) {
 
-		List<TroubleTicket> tickets = new ArrayList<>();
-
-		if (null != criteria.getId()) {
-
-			Optional<TroubleTicket> ticket = troubleTicketRepository.findById(criteria.getId());
-			if (ticket.isPresent()) {
-
-				tickets.add(ticket.get());
-				return tickets;
-			}
-			throw new NoSuchElementException("Trouble Ticket with id " + criteria.getId() + " doesnot exists");
-		}
-
-		if (null != criteria.getStatus()) {
-			List<TroubleTicket> result = troubleTicketRepository
-					.findAll(TroubleTicketSpecifications.status(criteria.getStatus()));
-			return result;
-		}
-
-		return troubleTicketRepository.findAll();
+		return troubleTicketRepository.findAll(specification);
 	}
 
 }

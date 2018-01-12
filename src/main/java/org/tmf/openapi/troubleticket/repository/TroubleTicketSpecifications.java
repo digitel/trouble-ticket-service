@@ -25,4 +25,17 @@ public class TroubleTicketSpecifications {
 		};
 	}
 
+	public static Specification<TroubleTicket> id(final String id) {
+
+		return new Specification<TroubleTicket>() {
+
+			@Override
+			public Predicate toPredicate(Root<TroubleTicket> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+
+				Predicate ttStatus = cb.equal(root.get("id"), id);
+				return ttStatus;
+			}
+		};
+	}
+
 }
