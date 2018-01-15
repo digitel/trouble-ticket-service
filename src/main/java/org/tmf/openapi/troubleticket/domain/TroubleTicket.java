@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Entity
 @XmlRootElement
 @JsonFilter("troubleTicketFilter")
-public class TroubleTicket implements Serializable {
+public class TroubleTicket implements Serializable, Comparable<TroubleTicket> {
 
 	private static final long serialVersionUID = -8788148471610700410L;
 
@@ -239,6 +239,13 @@ public class TroubleTicket implements Serializable {
 				+ ", statusChangeReason=" + statusChangeReason + ", statusChangeDate=" + statusChangeDate
 				+ ", resolutionDate=" + resolutionDate + ", relatedObjects=" + relatedObjects + ", notes=" + notes
 				+ ", relatedParties=" + relatedParties + "]";
+	}
+
+	@Override
+	public int compareTo(TroubleTicket o) {
+
+		return (int) (this.id - o.id);
+
 	}
 
 }
