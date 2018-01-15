@@ -3,9 +3,8 @@ package org.tmf.openapi.troubleticket.web;
 import static org.tmf.openapi.troubleticket.common.ObjectMapper.mapObjectWithExcludeFilter;
 import static org.tmf.openapi.troubleticket.repository.TroubleTicketSpecificationBuilder.buildSpecification;
 
-import java.net.URI;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.MultiValueMap;
@@ -33,21 +32,19 @@ public class TroubleTicketController {
 	public ResponseEntity<MappingJacksonValue> createTroubleTicket(@RequestBody TroubleTicket troubleTicket) {
 
 		troubleTicket = troubleTicketService.createTroubleTicket(troubleTicket);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(troubleTicket.getId()).toUri();
-		return ResponseEntity.created(location).body(mapObjectWithExcludeFilter(troubleTicket, null));
+		return ResponseEntity
+				.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+						.buildAndExpand(troubleTicket.getId()).toUri())
+				.body(mapObjectWithExcludeFilter(troubleTicket, null));
 	}
 
 	@PatchMapping("/{id}")
 	public ResponseEntity<MappingJacksonValue> patchTroubleTicket(@PathVariable Long id,
 			@RequestBody TroubleTicket troubleTicket) {
 
-		if (null != troubleTicket.getId()) {
-			throw new IllegalArgumentException("id cannot be updated.");
-		}
-		troubleTicket.setId(id);
-		troubleTicket = troubleTicketService.partialUpdateTroubleTicket(troubleTicket);
-		return ResponseEntity.ok(mapObjectWithExcludeFilter(troubleTicket, null));
+		validateTroubleTicket(id, troubleTicket);
+		return ResponseEntity
+				.ok(mapObjectWithExcludeFilter(troubleTicketService.partialUpdateTroubleTicket(troubleTicket), null));
 
 	}
 
@@ -55,18 +52,15 @@ public class TroubleTicketController {
 	public ResponseEntity<MappingJacksonValue> updateTroubleTicket(@PathVariable Long id,
 			@RequestBody TroubleTicket troubleTicket) {
 
-		if ((null == troubleTicket.getId()) || (null != troubleTicket.getId() && id != troubleTicket.getId())) {
-			throw new IllegalArgumentException("id cannot be updated.");
-		}
-		troubleTicket = troubleTicketService.updateTroubleTicket(troubleTicket);
-		return ResponseEntity.ok(mapObjectWithExcludeFilter(troubleTicket, null));
+		validateTroubleTicket(id, troubleTicket);
+		return ResponseEntity
+				.ok(mapObjectWithExcludeFilter(troubleTicketService.updateTroubleTicket(troubleTicket), null));
 
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<MappingJacksonValue> getTroubleTicket(@PathVariable Long id,
 			@RequestParam MultiValueMap<String, String> requestParams) {
-
 		return ResponseEntity.ok(mapObjectWithExcludeFilter(troubleTicketService.findTroubleTicket(id), requestParams));
 
 	}
@@ -74,10 +68,16 @@ public class TroubleTicketController {
 	// TODO Implement header pagination for GET All data operation.
 	@GetMapping()
 	public ResponseEntity<MappingJacksonValue> getTroubleTicket(
-			@RequestParam MultiValueMap<String, String> requestParams) {
+			@RequestParam MultiValueMap<String, String> requestParams, Pageable pageable) {
 
-		return ResponseEntity.ok(mapObjectWithExcludeFilter(
-				troubleTicketService.findTroubleTicket(buildSpecification(requestParams)), requestParams));
+		return ResponseEntity.ok(mapObjectWithExcludeFilter(troubleTicketService
+				.findTroubleTicketPageable(buildSpecification(requestParams), pageable).getContent(), requestParams));
+	}
+
+	private void validateTroubleTicket(Long id, TroubleTicket troubleTicket) {
+		if ((null == troubleTicket.getId()) || (null != troubleTicket.getId() && id != troubleTicket.getId())) {
+			throw new IllegalArgumentException("id cannot be updated.");
+		}
 	}
 
 }

@@ -8,6 +8,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.tmf.openapi.troubleticket.domain.Status;
@@ -132,4 +134,9 @@ public class TroubleTicketService {
 		return troubleTicketRepository.findAll(specification);
 	}
 
+	public Page<TroubleTicket> findTroubleTicketPageable(Specification<TroubleTicket> specification,
+			Pageable pageable) {
+
+		return troubleTicketRepository.findAll(specification, pageable);
+	}
 }
