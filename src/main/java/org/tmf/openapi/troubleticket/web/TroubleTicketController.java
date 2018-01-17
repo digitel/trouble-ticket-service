@@ -1,7 +1,10 @@
 package org.tmf.openapi.troubleticket.web;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.tmf.openapi.troubleticket.common.ObjectMapper.mapObjectWithExcludeFilter;
 import static org.tmf.openapi.troubleticket.repository.TroubleTicketSpecificationBuilder.buildSpecification;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.tmf.openapi.troubleticket.domain.TroubleTicket;
 import org.tmf.openapi.troubleticket.service.TroubleTicketService;
 
@@ -32,10 +34,8 @@ public class TroubleTicketController {
 	public ResponseEntity<MappingJacksonValue> createTroubleTicket(@RequestBody TroubleTicket troubleTicket) {
 
 		troubleTicket = troubleTicketService.createTroubleTicket(troubleTicket);
-		return ResponseEntity
-				.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(troubleTicket.getId()).toUri())
-				.body(mapObjectWithExcludeFilter(troubleTicket, null));
+		return ResponseEntity.created(troubleTicket.getHref())
+				.body(mapObjectWithExcludeFilter(populateHref(troubleTicket), null));
 	}
 
 	@PatchMapping("/{id}")
@@ -43,8 +43,8 @@ public class TroubleTicketController {
 			@RequestBody TroubleTicket troubleTicket) {
 
 		validateTroubleTicket(id, troubleTicket);
-		return ResponseEntity
-				.ok(mapObjectWithExcludeFilter(troubleTicketService.partialUpdateTroubleTicket(troubleTicket), null));
+		return ResponseEntity.ok(mapObjectWithExcludeFilter(
+				populateHref(troubleTicketService.partialUpdateTroubleTicket(troubleTicket)), null));
 
 	}
 
@@ -53,15 +53,16 @@ public class TroubleTicketController {
 			@RequestBody TroubleTicket troubleTicket) {
 
 		validateTroubleTicket(id, troubleTicket);
-		return ResponseEntity
-				.ok(mapObjectWithExcludeFilter(troubleTicketService.updateTroubleTicket(troubleTicket), null));
+		return ResponseEntity.ok(mapObjectWithExcludeFilter(
+				populateHref(troubleTicketService.updateTroubleTicket(troubleTicket)), null));
 
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<MappingJacksonValue> getTroubleTicket(@PathVariable Long id,
 			@RequestParam MultiValueMap<String, String> requestParams) {
-		return ResponseEntity.ok(mapObjectWithExcludeFilter(troubleTicketService.findTroubleTicket(id), requestParams));
+		return ResponseEntity.ok(
+				mapObjectWithExcludeFilter(populateHref(troubleTicketService.findTroubleTicket(id)), requestParams));
 
 	}
 
@@ -70,14 +71,29 @@ public class TroubleTicketController {
 	public ResponseEntity<MappingJacksonValue> getTroubleTicket(
 			@RequestParam MultiValueMap<String, String> requestParams, Pageable pageable) {
 
-		return ResponseEntity.ok(mapObjectWithExcludeFilter(troubleTicketService
-				.findTroubleTicketPageable(buildSpecification(requestParams), pageable).getContent(), requestParams));
+		return ResponseEntity
+				.ok(mapObjectWithExcludeFilter(
+						populateHref(troubleTicketService
+								.findTroubleTicket(buildSpecification(requestParams), pageable).getContent()),
+						requestParams));
 	}
 
 	private void validateTroubleTicket(Long id, TroubleTicket troubleTicket) {
 		if ((null == troubleTicket.getId()) || (null != troubleTicket.getId() && id != troubleTicket.getId())) {
 			throw new IllegalArgumentException("id cannot be updated.");
 		}
+	}
+
+	private TroubleTicket populateHref(TroubleTicket troubleTicket) {
+		troubleTicket.setHref(linkTo(TroubleTicketController.class).slash(troubleTicket.getId()).toUri());
+		return troubleTicket;
+	}
+
+	private List<TroubleTicket> populateHref(List<TroubleTicket> troubleTickets) {
+		for (TroubleTicket troubleTicket : troubleTickets) {
+			populateHref(troubleTicket);
+		}
+		return troubleTickets;
 	}
 
 }

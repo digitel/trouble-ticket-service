@@ -18,10 +18,6 @@ public class TroubleTicketSpecificationBuilder {
 
 		for (Entry<String, List<String>> entry : requestParams.entrySet()) {
 
-			if (entry.getKey().toLowerCase().contains("range")) {
-				continue;
-			}
-
 			SearchCriteria criteria = determineSearchCriteria(entry);
 
 			if (null != entry.getKey() && entry.getKey().contains("id")) {

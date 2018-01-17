@@ -2,6 +2,7 @@
 package org.tmf.openapi.troubleticket.domain;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +19,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,6 +38,9 @@ public class TroubleTicket implements Serializable, Comparable<TroubleTicket> {
 	@Column(name = "TT_ID")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+
+	@Transient
+	private URI href;
 
 	private String correlationId;
 
@@ -86,6 +91,14 @@ public class TroubleTicket implements Serializable, Comparable<TroubleTicket> {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public URI getHref() {
+		return href;
+	}
+
+	public void setHref(URI href) {
+		this.href = href;
 	}
 
 	public String getCorrelationId() {

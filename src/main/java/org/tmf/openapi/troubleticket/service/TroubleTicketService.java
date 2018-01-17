@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.tmf.openapi.troubleticket.domain.Status;
 import org.tmf.openapi.troubleticket.domain.TroubleTicket;
@@ -129,13 +130,13 @@ public class TroubleTicketService {
 		return troubleTicketRepository.findById(id).get();
 	}
 
-	public List<TroubleTicket> findTroubleTicket(Specification<TroubleTicket> specification) {
+	public List<TroubleTicket> findTroubleTicket(@Nullable Specification<TroubleTicket> specification) {
 
 		return troubleTicketRepository.findAll(specification);
 	}
 
-	public Page<TroubleTicket> findTroubleTicketPageable(Specification<TroubleTicket> specification,
-			Pageable pageable) {
+	public Page<TroubleTicket> findTroubleTicket(@Nullable Specification<TroubleTicket> specification,
+			@NotNull Pageable pageable) {
 
 		return troubleTicketRepository.findAll(specification, pageable);
 	}
