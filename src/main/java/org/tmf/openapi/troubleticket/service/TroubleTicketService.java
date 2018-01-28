@@ -114,8 +114,8 @@ public class TroubleTicketService {
 		if (null != troubleTicket.getRelatedObjects()) {
 			existingTroubleTicket.setRelatedObjects(troubleTicket.getRelatedObjects());
 		}
-		if (null != troubleTicket.getNotes()) {
-			existingTroubleTicket.setNotes(troubleTicket.getNotes());
+		if (null != troubleTicket.getNote()) {
+			existingTroubleTicket.setNote(troubleTicket.getNote());
 		}
 
 		return troubleTicketRepository.save(existingTroubleTicket);

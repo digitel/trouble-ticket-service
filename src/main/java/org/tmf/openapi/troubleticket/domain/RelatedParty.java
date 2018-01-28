@@ -5,16 +5,21 @@
 package org.tmf.openapi.troubleticket.domain;
 
 import java.io.Serializable;
+import java.net.URI;
 
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 
 @Embeddable
 public class RelatedParty implements Serializable {
 
 	private static final long serialVersionUID = 5554622384644227857L;
 
+	@NotNull(message = "href is Mandatory")
+	private URI href;
 	private String role;
-	private String reference;
+	private String name;
+	private String validFor; // TODO confirm type.
 
 	public String getRole() {
 		return role;
@@ -24,12 +29,30 @@ public class RelatedParty implements Serializable {
 		this.role = role;
 	}
 
-	public String getReference() {
-		return reference;
+	public URI getHref() {
+		return href;
 	}
 
-	public void setReference(String reference) {
-		this.reference = reference;
+	public void setHref(URI href) {
+		this.href = href;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getValidFor() {
+		return validFor;
+	}
+
+	public void setValidFor(String validFor) {
+		this.validFor = validFor;
+	}
+	
+	
 
 }

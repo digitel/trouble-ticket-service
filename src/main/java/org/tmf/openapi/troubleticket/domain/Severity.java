@@ -6,7 +6,7 @@ package org.tmf.openapi.troubleticket.domain;
 
 public enum Severity {
 
-	LOW, CRITICAL, MEDIUM, HIGH;
+	LOW, CRITICAL, MEDIUM, High;
 
 	/**
 	 *

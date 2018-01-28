@@ -62,7 +62,14 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 	public final ResponseEntity<CustomExceptionResponse> handleNoSuchElementException(Exception ex,
 			WebRequest request) {
 
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		CustomExceptionResponse exceptionResponse = new CustomExceptionResponse();
+
+		exceptionResponse.setTimestamp(new Date());
+		exceptionResponse.setStatus(HttpStatus.NOT_FOUND.toString());
+		exceptionResponse.setError("Not Found");
+		exceptionResponse.setMessage(ex.getMessage());
+		exceptionResponse.setPath(request.getDescription(false));
+		return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
 
 	}
 }

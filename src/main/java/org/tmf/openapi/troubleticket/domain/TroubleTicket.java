@@ -20,9 +20,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.springframework.lang.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -42,6 +45,7 @@ public class TroubleTicket implements Serializable, Comparable<TroubleTicket> {
 	@Transient
 	private URI href;
 
+	@Nullable
 	private String correlationId;
 
 	@NotEmpty(message = "Description is Mandatory")
@@ -77,12 +81,18 @@ public class TroubleTicket implements Serializable, Comparable<TroubleTicket> {
 
 	@ElementCollection
 	@CollectionTable(name = "RELATED_OBJECT", joinColumns = @JoinColumn(name = "OWNER_ID"))
+	@Valid
 	private List<RelatedObject> relatedObjects;
+	
+	
 	@ElementCollection
 	@CollectionTable(name = "NOTES", joinColumns = @JoinColumn(name = "OWNER_ID"))
-	private List<Note> notes;
+	@Valid
+	private List<Note> note;
+	
 	@ElementCollection
 	@CollectionTable(name = "RELATED_PARTY", joinColumns = @JoinColumn(name = "OWNER_ID"))
+	@Valid
 	private List<RelatedParty> relatedParties;
 
 	public Long getId() {
@@ -200,15 +210,15 @@ public class TroubleTicket implements Serializable, Comparable<TroubleTicket> {
 		this.relatedObjects = relatedObjects;
 	}
 
-	public List<Note> getNotes() {
-		if (notes == null) {
-			notes = new ArrayList<>();
+	public List<Note> getNote() {
+		if (note == null) {
+			note = new ArrayList<>();
 		}
-		return this.notes;
+		return this.note;
 	}
 
-	public void setNotes(List<Note> notes) {
-		this.notes = notes;
+	public void setNote(List<Note> notes) {
+		this.note = notes;
 	}
 
 	public List<RelatedParty> getRelatedParties() {
@@ -250,7 +260,7 @@ public class TroubleTicket implements Serializable, Comparable<TroubleTicket> {
 				+ ", severity=" + severity + ", type=" + type + ", creationDate=" + creationDate
 				+ ", targetResolutionDate=" + targetResolutionDate + ", status=" + status + ", subStatus=" + subStatus
 				+ ", statusChangeReason=" + statusChangeReason + ", statusChangeDate=" + statusChangeDate
-				+ ", resolutionDate=" + resolutionDate + ", relatedObjects=" + relatedObjects + ", notes=" + notes
+				+ ", resolutionDate=" + resolutionDate + ", relatedObjects=" + relatedObjects + ", notes=" + note
 				+ ", relatedParties=" + relatedParties + "]";
 	}
 

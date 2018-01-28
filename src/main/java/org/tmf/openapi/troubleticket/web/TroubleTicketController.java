@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.MultiValueMap;
@@ -30,15 +31,15 @@ public class TroubleTicketController {
 	@Autowired
 	private TroubleTicketService troubleTicketService;
 
-	@PostMapping()
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MappingJacksonValue> createTroubleTicket(@RequestBody TroubleTicket troubleTicket) {
 
 		troubleTicket = troubleTicketService.createTroubleTicket(troubleTicket);
-		return ResponseEntity.created(troubleTicket.getHref())
-				.body(mapObjectWithExcludeFilter(populateHref(troubleTicket), null));
+		return ResponseEntity.created(populateHref(troubleTicket).getHref())
+				.body(mapObjectWithExcludeFilter(troubleTicket, null));
 	}
 
-	@PatchMapping("/{id}")
+	@PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MappingJacksonValue> patchTroubleTicket(@PathVariable Long id,
 			@RequestBody TroubleTicket troubleTicket) {
 
@@ -48,7 +49,7 @@ public class TroubleTicketController {
 
 	}
 
-	@PutMapping("/{id}")
+	@PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MappingJacksonValue> updateTroubleTicket(@PathVariable Long id,
 			@RequestBody TroubleTicket troubleTicket) {
 
@@ -58,7 +59,7 @@ public class TroubleTicketController {
 
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MappingJacksonValue> getTroubleTicket(@PathVariable Long id,
 			@RequestParam MultiValueMap<String, String> requestParams) {
 		return ResponseEntity.ok(
@@ -67,15 +68,13 @@ public class TroubleTicketController {
 	}
 
 	// TODO Implement header pagination for GET All data operation.
-	@GetMapping()
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MappingJacksonValue> getTroubleTicket(
 			@RequestParam MultiValueMap<String, String> requestParams, Pageable pageable) {
 
-		return ResponseEntity
-				.ok(mapObjectWithExcludeFilter(
-						populateHref(troubleTicketService
-								.findTroubleTicket(buildSpecification(requestParams), pageable).getContent()),
-						requestParams));
+		return ResponseEntity.ok(mapObjectWithExcludeFilter(populateHref(
+				troubleTicketService.findTroubleTicket(buildSpecification(requestParams), pageable).getContent()),
+				requestParams));
 	}
 
 	private void validateTroubleTicket(Long id, TroubleTicket troubleTicket) {
